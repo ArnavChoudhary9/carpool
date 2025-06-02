@@ -30,7 +30,7 @@ export default async function Signup(props: {
         </p>
 
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          <div className="flex flex-col sm:flex-row gap-2">
+          {/* <div className="flex flex-col sm:flex-row gap-2">
             <div className="flex-1">
               <Label htmlFor="firstName">First Name</Label>
               <Input name="firstName" placeholder="First name" required />
@@ -39,7 +39,7 @@ export default async function Signup(props: {
               <Label htmlFor="lastName">Last Name</Label>
               <Input name="lastName" placeholder="Last name" />
             </div>
-          </div>
+          </div> */}
 
           <Label htmlFor="email">Email</Label>
           <Input name="email" placeholder="you@example.com" required />
@@ -53,7 +53,7 @@ export default async function Signup(props: {
             required
           />
 
-          <Label htmlFor="phone">Phone Number</Label>
+          {/* <Label htmlFor="phone">Phone Number</Label>
           <Input
             type="tel"
             name="phone"
@@ -63,7 +63,7 @@ export default async function Signup(props: {
             pattern="[0-9]{10}"
             inputMode="numeric"
             required
-          />
+          /> */}
 
           <SubmitButton formAction={signUpAction} pendingText="Signing up...">
             Sign up
