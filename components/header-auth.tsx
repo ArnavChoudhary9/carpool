@@ -27,7 +27,6 @@ export interface AuthButtonProps {
 export default function AuthButton({ user, profileData }: AuthButtonProps) {
   const isMobile = useIsMobile();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
 
   // Menu icon animation
   const MenuIcon = ({ open }: { open: boolean }) => (
