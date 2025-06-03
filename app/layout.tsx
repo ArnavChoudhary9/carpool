@@ -36,7 +36,7 @@ export default async function RootLayout({
     user = result.user;
     profileData = result.profileData;
   }
-  
+
   return (
     <html lang="en" className={geistSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
@@ -48,8 +48,8 @@ export default async function RootLayout({
         >
           <main className="min-h-screen flex flex-col items-center">
             <div className="flex-1 w-full flex flex-col items-center">
-              <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-                <div className="w-full max-w-5xl flex justify-between items-center px-5 text-sm">
+              <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16 sticky top-0 z-30 bg-background shadow-md">
+                <div className="w-full flex justify-between items-center px-5 text-sm">
                   <div className="flex gap-5 items-center font-semibold">
                     <Link href={"/"}>{process.env.NEXT_PUBLIC_APP_NAME}</Link>
                   </div>

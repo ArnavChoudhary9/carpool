@@ -46,7 +46,7 @@ export default async function ProtectedPage() {
             <Map />
           </div>
 
-          <div className="flex flex-row gap-2 items-start">
+          <div className="flex flex-row gap-2 pt-12 items-start">
             <Button asChild size="sm" variant={"outline"}>
               <Link href="/user/create">Create a Ride</Link>
             </Button>

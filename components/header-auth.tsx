@@ -27,6 +27,7 @@ export interface AuthButtonProps {
 export default function AuthButton({ user, profileData }: AuthButtonProps) {
   const isMobile = useIsMobile();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   // Menu icon animation
   const MenuIcon = ({ open }: { open: boolean }) => (
@@ -36,16 +37,22 @@ export default function AuthButton({ user, profileData }: AuthButtonProps) {
       onClick={() => setMenuOpen((v) => !v)}
     >
       <motion.span
-        animate={{ rotate: open ? 45 : 0, y: open ? 8 : 0 }}
-        className="block w-6 h-0.5 bg-foreground mb-1 rounded"
+        animate={{
+          rotate: open ? 45 : 0,
+          y: open ? 6 : 0,
+        }}
+        className="block w-6 h-0.5 bg-foreground mb-1 rounded origin-center"
       />
       <motion.span
         animate={{ opacity: open ? 0 : 1 }}
-        className="block w-6 h-0.5 bg-foreground mb-1 rounded"
+        className="block w-6 h-0.5 bg-foreground mb-1 rounded origin-center"
       />
       <motion.span
-        animate={{ rotate: open ? -45 : 0, y: open ? -8 : 0 }}
-        className="block w-6 h-0.5 bg-foreground rounded"
+        animate={{
+          rotate: open ? -45 : 0,
+          y: open ? -6 : 0,
+        }}
+        className="block w-6 h-0.5 bg-foreground rounded origin-center"
       />
     </button>
   );
@@ -65,18 +72,21 @@ export default function AuthButton({ user, profileData }: AuthButtonProps) {
             initial={{ y: -40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -40, opacity: 0 }}
-            className="bg-background rounded-lg shadow-lg p-6 flex flex-col gap-4 min-w-[70vw] max-w-xs"
+            className="bg-background rounded-lg shadow-lg p-6 flex flex-col gap-4 min-w-[70vw] max-w-xs items-center"
             onClick={e => e.stopPropagation()}
           >
             {user ? (
               <>
                 <Button asChild size="sm" variant={"outline"}>
                   <Link href="/user/profile" onClick={() => setMenuOpen(false)}>
-                    Hey, {profileData?.full_name ?? user.email}!
+                    Profile
                   </Link>
                 </Button>
-                <form action={signOutAction}>
-                  <Button type="submit" variant={"outline"}>
+                <form
+                  action={signOutAction}
+                  onSubmit={() => setMenuOpen(false)}
+                >
+                  <Button type="submit" variant={"destructive"}>
                     Sign out
                   </Button>
                 </form>

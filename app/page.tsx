@@ -20,7 +20,7 @@ export default async function Home() {
         </span>
 
         <div className="pt-8">
-          <Button asChild size="sm" variant={"outline"}>
+          <Button asChild size="sm" variant={"default"}>
             <Link href="/sign-up">Find Pool around you!</Link>
           </Button>
         </div>
