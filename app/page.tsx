@@ -10,7 +10,7 @@ export default async function Home() {
         src="/hero.png"
         alt="Carpooling Banner"
         width={1024}
-        height={200}
+        height={366}
         className="w-full object-cover rounded-lg"
       />
 
@@ -21,7 +21,7 @@ export default async function Home() {
 
         <div className="pt-8">
           <Button asChild size="sm" variant={"default"}>
-            <Link href="/sign-up">Find Pool around you!</Link>
+            <Link href="/sign-in">Find Pool around you!</Link>
           </Button>
         </div>
       </div>

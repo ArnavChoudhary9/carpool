@@ -1,7 +1,6 @@
 import { EnvVarWarning } from "@/components/env-var-warning";
 import HeaderAuth from "@/components/header-auth";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { createClient } from "@/utils/supabase/server";
 import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import { getUserAndProfile } from "@/utils/supabase/user-and-profile";
 import { Geist } from "next/font/google";

@@ -1,10 +1,13 @@
-import { createClient } from "@/utils/supabase/server";
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
+import { createClient } from "@/utils/supabase/server";
+
+import { Button } from "@/components/ui/button";
+import UserRideForm from "@/components/UserRideForm";
+
+import GoogleMapsProvider from "@/components/GoogleMapsProvider";
 import Map from "@/components/map";
 
 export default async function ProtectedPage() {
@@ -43,16 +46,20 @@ export default async function ProtectedPage() {
       {exists && (
         <>
           <div className="w-full">
-            <Map />
+            <GoogleMapsProvider>
+              <Map />
+            </GoogleMapsProvider>
           </div>
 
-          <div className="flex flex-row gap-2 pt-12 items-start">
+          <UserRideForm />
+
+          <div className="flex flex-row gap-2 items-start w-full max-w-96 sm:min-w-96 sm:max-w-96 mx-auto">
             <Button asChild size="sm" variant={"outline"}>
-              <Link href="/user/create">Create a Ride</Link>
+              <Link href="/user/rides/create">Create a Ride</Link>
             </Button>
 
             <Button asChild size="sm" variant={"outline"}>
-              <Link href="/user/search">Search for Rides</Link>
+              <Link href="/user/rides/search">Search for Rides</Link>
             </Button>
           </div>
         </>
