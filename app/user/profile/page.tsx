@@ -12,7 +12,7 @@ export default async function UserProfilePage(props: {
   const searchParams = await props.searchParams;
   if ("message" in searchParams) {
     return (
-      <div className="w-full flex-1 flex items-center h-screen sm:max-w-md justify-center gap-2 p-4">
+      <div className="w-full flex-1 flex items-center h-screen sm:max-w-md justify-center gap-2 p-4 pt-16">
         <FormMessage message={searchParams} />
       </div>
     );
@@ -37,7 +37,7 @@ export default async function UserProfilePage(props: {
   const exists = !!data;
 
   return (
-    <div className="flex-1 w-full flex flex-col gap-12">
+    <div className="flex-1 w-full flex flex-col gap-12 pt-16">
       <div className="flex flex-col gap-2 items-start">
         {!exists && (
           <form className="flex flex-col w-full max-w-96 sm:min-w-96 sm:max-w-96 mx-auto">
@@ -77,16 +77,18 @@ export default async function UserProfilePage(props: {
         )}
 
         {exists && (
-          <div className="flex flex-col gap-2 w-full items-start">
-            <div className="text-3xl font-thin">
+            <div className="flex max-w-[36em] mx-auto items-center px-2 sm:px-0">
+            <div className="flex flex-col gap-2 items-start">
+              <div className="text-3xl font-thin">
               Welcome, {data.full_name || "User"}!
-            </div>
+              </div>
 
-            <div className="text-muted-foreground flex items-center gap-1">
+              <div className="text-muted-foreground flex items-center gap-1">
               <span className="text-xl leading-none">★</span>
               <span>{data.rating_avg || 0} / 5</span>
+              </div>
             </div>
-          </div>
+            </div>
         )}
       </div>
     </div>
