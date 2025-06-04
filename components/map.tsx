@@ -19,7 +19,7 @@ interface MapProps {
 }
 
 const Map = () => {
-  const { pickupLatLng, dropoffLatLng } = useRide();
+  const { pickupLatLng, dropoffLatLng, setPickup, setPickupLatLng, pickup, setDropoff, setDropoffLatLng, dropoff } = useRide();
   const [userCenter, setUserCenter] = useState<LatLng | null>(null);
   const [mapRef, setMapRef] = useState<google.maps.Map | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
@@ -83,6 +83,62 @@ const Map = () => {
     }
   }, [pickupLatLng, dropoffLatLng]);
 
+  // When user location is found and no pickup is set, use it as pickup and fetch address
+  useEffect(() => {
+    if (userCenter && !pickup) {
+      setPickupLatLng(userCenter);
+      // Fetch address from reverse geocode
+      const fetchAddress = async () => {
+        try {
+          const res = await fetch(`/api/geocode/reverse?latlng=${userCenter.lat},${userCenter.lng}`);
+          const data = await res.json();
+          if (data && data.results && data.results.length > 0) {
+            setPickup(data.results[0].formatted_address);
+          }
+        } catch (e) {
+          // ignore
+        }
+      };
+      fetchAddress();
+    }
+  }, [userCenter, pickup, setPickup, setPickupLatLng]);
+
+  // Handler for dragging pickup marker
+  const handlePickupDragEnd = async (e: google.maps.MapMouseEvent) => {
+    if (e.latLng) {
+      const lat = e.latLng.lat();
+      const lng = e.latLng.lng();
+      setPickupLatLng({ lat, lng });
+      try {
+        const res = await fetch(`/api/geocode/reverse?latlng=${lat},${lng}`);
+        const data = await res.json();
+        if (data && data.results && data.results.length > 0) {
+          setPickup(data.results[0].formatted_address);
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+  };
+
+  // Handler for dragging dropoff marker
+  const handleDropoffDragEnd = async (e: google.maps.MapMouseEvent) => {
+    if (e.latLng) {
+      const lat = e.latLng.lat();
+      const lng = e.latLng.lng();
+      setDropoffLatLng({ lat, lng });
+      try {
+        const res = await fetch(`/api/geocode/reverse?latlng=${lat},${lng}`);
+        const data = await res.json();
+        if (data && data.results && data.results.length > 0) {
+          setDropoff(data.results[0].formatted_address);
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+  };
+
   return (
     <>
       <UserLocation onLocation={setUserCenter} />
@@ -92,8 +148,20 @@ const Map = () => {
         zoom={zoom}
         onLoad={(map) => setMapRef(map)}
       >
-        {pickupLatLng && <Marker position={pickupLatLng} />}
-        {dropoffLatLng && <Marker position={dropoffLatLng} />}
+        {pickupLatLng && (
+          <Marker
+            position={pickupLatLng}
+            draggable
+            onDragEnd={handlePickupDragEnd}
+          />
+        )}
+        {dropoffLatLng && (
+          <Marker
+            position={dropoffLatLng}
+            draggable
+            onDragEnd={handleDropoffDragEnd}
+          />
+        )}
         {pickupLatLng && dropoffLatLng && directions && (
           <DirectionsRenderer directions={directions} />
         )}
