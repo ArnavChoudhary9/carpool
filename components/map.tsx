@@ -101,7 +101,7 @@ const Map = () => {
       };
       fetchAddress();
     }
-  }, [userCenter, pickup, setPickup, setPickupLatLng]);
+  }, [userCenter, setPickup, setPickupLatLng]);
 
   // Handler for dragging pickup marker
   const handlePickupDragEnd = async (e: google.maps.MapMouseEvent) => {
