@@ -5,10 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 
 import { Button } from "@/components/ui/button";
-import UserRideForm from "@/components/UserRideForm";
-
-import GoogleMapsProvider from "@/components/GoogleMapsProvider";
-import Map from "@/components/map";
+import RideMapForm from "@/components/RideMapForm";
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
@@ -45,14 +42,8 @@ export default async function ProtectedPage() {
 
       {exists && (
         <>
-          <div className="w-full">
-            <GoogleMapsProvider>
-              <Map />
-            </GoogleMapsProvider>
-          </div>
-
-          <UserRideForm />
-
+          <RideMapForm />
+          
           <div className="flex flex-row gap-2 items-start w-full max-w-96 sm:min-w-96 sm:max-w-96 mx-auto">
             <Button asChild size="sm" variant={"outline"}>
               <Link href="/user/rides/create">Create a Ride</Link>
