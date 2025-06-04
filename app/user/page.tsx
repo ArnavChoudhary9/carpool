@@ -45,11 +45,11 @@ export default async function ProtectedPage() {
           <RideMapForm />
           
           <div className="flex flex-row gap-2 items-start w-full max-w-96 sm:min-w-96 sm:max-w-96 mx-auto">
-            <Button asChild size="sm" variant={"outline"}>
+            <Button asChild size="sm" variant={"default"}>
               <Link href="/user/rides/create">Create a Ride</Link>
             </Button>
 
-            <Button asChild size="sm" variant={"outline"}>
+            <Button asChild size="sm" variant={"default"}>
               <Link href="/user/rides/search">Search for Rides</Link>
             </Button>
           </div>

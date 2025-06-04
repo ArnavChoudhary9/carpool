@@ -1,6 +1,7 @@
 'use client';
 
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import { useRide } from '@/components/RideContext';
+import { GoogleMap, Marker, DirectionsRenderer } from '@react-google-maps/api';
 import { useEffect, useState } from 'react';
 import { UserLocation } from './UserLocation';
 
@@ -13,24 +14,15 @@ const DEFAULT_ZOOM = 16;
 
 type LatLng = { lat: number; lng: number };
 
-function getBounds(p1: LatLng, p2: LatLng) {
-  if (!p1 || !p2) return null;
-  return {
-    north: Math.max(p1.lat, p2.lat),
-    south: Math.min(p1.lat, p2.lat),
-    east: Math.max(p1.lng, p2.lng),
-    west: Math.min(p1.lng, p2.lng),
-  };
-}
-
 interface MapProps {
-  pickupLatLng?: LatLng | null;
-  dropoffLatLng?: LatLng | null;
+  // No props needed, will use context
 }
 
-const Map = ({ pickupLatLng, dropoffLatLng }: MapProps) => {
+const Map = () => {
+  const { pickupLatLng, dropoffLatLng } = useRide();
   const [userCenter, setUserCenter] = useState<LatLng | null>(null);
   const [mapRef, setMapRef] = useState<google.maps.Map | null>(null);
+  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
 
   // Calculate center and zoom
   let center = userCenter || { lat: 0, lng: 0 };
@@ -60,6 +52,37 @@ const Map = ({ pickupLatLng, dropoffLatLng }: MapProps) => {
     }
   }, [mapRef, pickupLatLng, dropoffLatLng]);
 
+  // Move map to user location when it becomes available and no pickup/dropoff is set
+  useEffect(() => {
+    if (mapRef && userCenter && !pickupLatLng && !dropoffLatLng) {
+      mapRef.setCenter(userCenter);
+      mapRef.setZoom(DEFAULT_ZOOM);
+    }
+  }, [mapRef, userCenter, pickupLatLng, dropoffLatLng]);
+
+  // Fetch directions when both markers are set
+  useEffect(() => {
+    if (pickupLatLng && dropoffLatLng && window.google) {
+      const directionsService = new window.google.maps.DirectionsService();
+      directionsService.route(
+        {
+          origin: pickupLatLng,
+          destination: dropoffLatLng,
+          travelMode: window.google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === window.google.maps.DirectionsStatus.OK) {
+            setDirections(result);
+          } else {
+            setDirections(null);
+          }
+        }
+      );
+    } else {
+      setDirections(null);
+    }
+  }, [pickupLatLng, dropoffLatLng]);
+
   return (
     <>
       <UserLocation onLocation={setUserCenter} />
@@ -71,6 +94,9 @@ const Map = ({ pickupLatLng, dropoffLatLng }: MapProps) => {
       >
         {pickupLatLng && <Marker position={pickupLatLng} />}
         {dropoffLatLng && <Marker position={dropoffLatLng} />}
+        {pickupLatLng && dropoffLatLng && directions && (
+          <DirectionsRenderer directions={directions} />
+        )}
       </GoogleMap>
     </>
   );

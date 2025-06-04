@@ -1,16 +1,18 @@
 'use client';
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
+import { useRide } from "@/components/RideContext";
 import { InputSuggested } from "@/components/ui/inputSuggestions";
 
 const DEBOUNCE_DELAY = 300; // milliseconds
 
-export default function UserRideForm({ pickup, setPickup, dropoff, setDropoff }: {
-  pickup: string;
-  setPickup: (val: string) => void;
-  dropoff: string;
-  setDropoff: (val: string) => void;
-}) {
+export default function UserRideForm() {
+  const {
+    pickup, setPickup,
+    dropoff, setDropoff,
+    setPickupLatLng, setDropoffLatLng
+  } = useRide();
+
   const [pickupSuggestions, setPickupSuggestions] = useState<string[]>([]);
   const [dropoffSuggestions, setDropoffSuggestions] = useState<string[]>([]);
 
@@ -21,39 +23,51 @@ export default function UserRideForm({ pickup, setPickup, dropoff, setDropoff }:
     return data.predictions || [];
   };
 
+  // Fetch geocode for pickup
   useEffect(() => {
-    let pickupTimeout: NodeJS.Timeout | undefined;
-
+    let timeout: NodeJS.Timeout | undefined;
     if (pickup) {
-      pickupTimeout = setTimeout(async () => {
+      timeout = setTimeout(async () => {
+        const res = await fetch(`/api/geocode/forward?address=${encodeURIComponent(pickup)}`);
+        const data = await res.json();
+        if (data && data.results && data.results.length > 0) {
+          const { lat, lng } = data.results[0].geometry.location;
+          setPickupLatLng({ lat, lng });
+        } else {
+          setPickupLatLng(null);
+        }
         const pickupMatches = await fetchPlaces(pickup);
         setPickupSuggestions(pickupMatches.map((place: any) => place.description));
       }, DEBOUNCE_DELAY);
     } else {
+      setPickupLatLng(null);
       setPickupSuggestions([]);
     }
+    return () => { if (timeout) clearTimeout(timeout); };
+  }, [pickup, setPickupLatLng]);
 
-    return () => {
-      if (pickupTimeout) clearTimeout(pickupTimeout);
-    };
-  }, [pickup]);
-
+  // Fetch geocode for dropoff
   useEffect(() => {
-    let dropoffTimeout: NodeJS.Timeout | undefined;
-
+    let timeout: NodeJS.Timeout | undefined;
     if (dropoff) {
-      dropoffTimeout = setTimeout(async () => {
+      timeout = setTimeout(async () => {
+        const res = await fetch(`/api/geocode/forward?address=${encodeURIComponent(dropoff)}`);
+        const data = await res.json();
+        if (data && data.results && data.results.length > 0) {
+          const { lat, lng } = data.results[0].geometry.location;
+          setDropoffLatLng({ lat, lng });
+        } else {
+          setDropoffLatLng(null);
+        }
         const dropoffMatches = await fetchPlaces(dropoff);
         setDropoffSuggestions(dropoffMatches.map((place: any) => place.description));
       }, DEBOUNCE_DELAY);
     } else {
+      setDropoffLatLng(null);
       setDropoffSuggestions([]);
     }
-
-    return () => {
-      if (dropoffTimeout) clearTimeout(dropoffTimeout);
-    };
-  }, [dropoff]);
+    return () => { if (timeout) clearTimeout(timeout); };
+  }, [dropoff, setDropoffLatLng]);
 
   return (
     <form className="flex flex-col w-full max-w-96 sm:min-w-96 sm:max-w-96 mx-auto">
