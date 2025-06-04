@@ -151,19 +151,19 @@ const Map = () => {
         {pickupLatLng && (
           <Marker
             position={pickupLatLng}
-            draggable
+            draggable={true}
             onDragEnd={handlePickupDragEnd}
           />
         )}
         {dropoffLatLng && (
           <Marker
             position={dropoffLatLng}
-            draggable
+            draggable={true}
             onDragEnd={handleDropoffDragEnd}
           />
         )}
         {pickupLatLng && dropoffLatLng && directions && (
-          <DirectionsRenderer directions={directions} />
+          <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />
         )}
       </GoogleMap>
     </>
