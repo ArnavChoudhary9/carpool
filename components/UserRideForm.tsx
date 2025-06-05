@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
+
 import { useRide } from "@/components/RideContext";
 import { InputSuggested } from "@/components/ui/inputSuggestions";
+import { Button } from "@/components/ui/button";
 
 const DEBOUNCE_DELAY = 300; // milliseconds
 
@@ -10,6 +13,7 @@ export default function UserRideForm() {
   const {
     pickup, setPickup,
     dropoff, setDropoff,
+    pickupLatLng, dropoffLatLng,
     setPickupLatLng, setDropoffLatLng
   } = useRide();
 
@@ -88,6 +92,30 @@ export default function UserRideForm() {
           value={dropoff}
           onChange={(e) => setDropoff(e.target.value)}
         />
+
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button asChild size="sm" variant={"default"}>
+            <Link
+              href={`/user/rides/create?pickup=${pickupLatLng?.lat},${pickupLatLng?.lng}&dropoff=${dropoffLatLng?.lat},${dropoffLatLng?.lng}`}
+              aria-disabled={!pickupLatLng || !dropoffLatLng}
+              tabIndex={!pickupLatLng || !dropoffLatLng ? -1 : 0}
+              style={{ pointerEvents: !pickupLatLng || !dropoffLatLng ? "none" : undefined, opacity: !pickupLatLng || !dropoffLatLng ? 0.5 : 1 }}
+            >
+              Create a Ride
+            </Link>
+          </Button>
+
+          <Button asChild size="sm" variant={"default"}>
+            <Link
+              href={`/user/rides/search?pickup=${pickupLatLng?.lat},${pickupLatLng?.lng}&dropoff=${dropoffLatLng?.lat},${dropoffLatLng?.lng}`}
+              aria-disabled={!pickupLatLng || !dropoffLatLng}
+              tabIndex={!pickupLatLng || !dropoffLatLng ? -1 : 0}
+              style={{ pointerEvents: !pickupLatLng || !dropoffLatLng ? "none" : undefined, opacity: !pickupLatLng || !dropoffLatLng ? 0.5 : 1 }}
+            >
+              Search for Rides
+            </Link>
+          </Button>
+        </div>
       </div>
     </form>
   );

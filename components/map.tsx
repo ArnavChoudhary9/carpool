@@ -14,47 +14,19 @@ const DEFAULT_ZOOM = 16;
 
 type LatLng = { lat: number; lng: number };
 
-interface MapProps {
-  // No props needed, will use context
-}
-
 const Map = () => {
   const { pickupLatLng, dropoffLatLng, setPickup, setPickupLatLng, pickup, setDropoff, setDropoffLatLng, dropoff } = useRide();
   const [userCenter, setUserCenter] = useState<LatLng | null>(null);
   const [mapRef, setMapRef] = useState<google.maps.Map | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
-
-  // Calculate center and zoom
-  let center = userCenter || { lat: 0, lng: 0 };
-  let zoom = DEFAULT_ZOOM;
-
-  if (pickupLatLng && dropoffLatLng) {
-    center = {
-      lat: (pickupLatLng.lat + dropoffLatLng.lat) / 2,
-      lng: (pickupLatLng.lng + dropoffLatLng.lng) / 2,
-    };
-    zoom = 8;
-  } else if (pickupLatLng) {
-    center = pickupLatLng;
-    zoom = DEFAULT_ZOOM;
-  } else if (dropoffLatLng) {
-    center = dropoffLatLng;
-    zoom = DEFAULT_ZOOM;
-  }
-
-  // Fit bounds if both markers exist
-  useEffect(() => {
-    if (mapRef && pickupLatLng && dropoffLatLng && window.google) {
-      const bounds = new window.google.maps.LatLngBounds();
-      bounds.extend(pickupLatLng);
-      bounds.extend(dropoffLatLng);
-      mapRef.fitBounds(bounds);
-    }
-  }, [mapRef, pickupLatLng, dropoffLatLng]);
+  const [center, setCenter] = useState<LatLng>({ lat: 0, lng: 0 });
+  const [zoom, setZoom] = useState<number>(DEFAULT_ZOOM);
 
   // Move map to user location when it becomes available and no pickup/dropoff is set
   useEffect(() => {
     if (mapRef && userCenter && !pickupLatLng && !dropoffLatLng) {
+      setCenter(userCenter);
+      setZoom(DEFAULT_ZOOM);
       mapRef.setCenter(userCenter);
       mapRef.setZoom(DEFAULT_ZOOM);
     }
@@ -87,6 +59,8 @@ const Map = () => {
   useEffect(() => {
     if (userCenter && !pickup) {
       setPickupLatLng(userCenter);
+      setCenter(userCenter);
+      setZoom(DEFAULT_ZOOM);
       // Fetch address from reverse geocode
       const fetchAddress = async () => {
         try {

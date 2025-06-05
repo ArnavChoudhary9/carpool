@@ -1,10 +1,8 @@
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 
 import { createClient } from "@/utils/supabase/server";
 
-import { Button } from "@/components/ui/button";
 import RideMapForm from "@/components/RideMapForm";
 
 export default async function ProtectedPage() {
@@ -41,19 +39,7 @@ export default async function ProtectedPage() {
       }
 
       {exists && (
-        <>
-          <RideMapForm />
-          
-          <div className="flex flex-row gap-2 items-start w-full max-w-96 sm:min-w-96 sm:max-w-96 mx-auto">
-            <Button asChild size="sm" variant={"default"}>
-              <Link href="/user/rides/create">Create a Ride</Link>
-            </Button>
-
-            <Button asChild size="sm" variant={"default"}>
-              <Link href="/user/rides/search">Search for Rides</Link>
-            </Button>
-          </div>
-        </>
+        <RideMapForm />
       )}
     </div>
   );
